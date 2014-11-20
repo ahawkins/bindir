@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+mkdir -p ~/data/timetrap
+
+docker run --rm -t \
+	-v ~/data/timetrap:/data \
+	-v ${PWD}:/project \
+	bindir/timetrap $@
