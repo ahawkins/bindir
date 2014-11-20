@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+docker run --rm -t -v ~/data/todo:/data bindir/todo -l todo -f $@
