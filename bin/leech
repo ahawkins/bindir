@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -eou pipefail
+
+list="${1:-}"
+dest="${PWD}"
+
+if [ -z "${list}" ]; then
+	echo "USAGE: ${0} FILE" 2>&1
+	exit 1
+fi
+
+if [ ! -f "${list}" ]; then
+	echo "no such file ${list}" 2>&1
+	exit 1
+fi
+
+files="$(mktemp /tmp/leech.XXXXXX)"
+
+while read -r name; do
+	echo "${name}" 2>&1
+	ssh -n seedbox "cd torrents/downloads && find \"${name}\" -type f" | tee -a "${files}"
+done < "${list}"
+
+sort "${files}" | rsync -avzh --append --progress --files-from=- "seedbox:~/torrents/downloads" "${dest}"
