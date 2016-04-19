@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+usage() {
+	echo "${0} [DEST]"
+}
+
+main() {
+	declare script_file file_list dest="${PWD}"
+	script_file="$(mktemp)"
+	file_list="$(mktemp)"
+
+	cat > "${script_file}" <<'EOF'
+	#!/usr/bin/env bash
+
+	set -euo pipefail
+
+	declare config_directory="${HOME}/.local/ssync"
+	declare timestamp_file="${config_directory}/timestamp"
+
+	mkdir -p "${config_directory}"
+
+	if [ ! -f "${timestamp_file}" ]; then
+		touch "${timestamp_file}"
+	fi
+
+	pushd ~/torrents/downloads > /dev/null
+
+	find . -newer "${timestamp_file}" -print
+EOF
+
+	scp "${script_file}" seedbox:~/ssync-lookup
+	ssh -n seedbox 'chmod +x ~/ssync-lookup'
+	ssh -n seedbox '~/ssync-lookup' | tee "${file_list}"
+	rsync -avzh --append --progress --files-from="${file_list}" "seedbox:~/torrents/downloads" "${dest}"
+	ssh -n seedbox 'touch ~/.local/ssync/timestamp'
+}
+
+main "$@"
