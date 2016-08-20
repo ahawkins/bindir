@@ -27,13 +27,16 @@ main() {
 
 	pushd ~/torrents/downloads > /dev/null
 
-	find . -newer "${timestamp_file}" -print
+	find . -mindepth 1 -newer "${timestamp_file}" -print
 EOF
 
-	scp "${script_file}" seedbox:~/ssync-lookup
-	ssh -n seedbox 'chmod +x ~/ssync-lookup'
-	ssh -n seedbox '~/ssync-lookup' | tee "${file_list}"
-	rsync -avzh --append --progress --files-from="${file_list}" "seedbox:~/torrents/downloads" "${dest}"
+	if [[ "${1:-}" != "--touch" ]]; then
+		scp "${script_file}" seedbox:~/ssync-lookup
+		ssh -n seedbox 'chmod +x ~/ssync-lookup'
+		ssh -n seedbox '~/ssync-lookup' | tee "${file_list}"
+		rsync -avzh --append --progress --files-from="${file_list}" "seedbox:~/torrents/downloads" "${dest}"
+	fi
+
 	ssh -n seedbox 'touch ~/.local/ssync/timestamp'
 }
 
