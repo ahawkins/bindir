@@ -1,15 +1,13 @@
 .DEFAULT_GOAL: all
 
-.PHONY: permissions images
-
+.PHONY: all
 all: images permissions
 
+.PHONY: permissions
 permissions:
 	chmod +x bin/*
 
+.PHONY: images
 images:
-	docker build -t bindir/todo todo
-	docker build -t bindir/timetrap timetrap
-
-install:
-	ln -sf $(shell pwd)/bin ~/bin
+	docker build -t ahawkins/todo todo
+	docker build -t ahawkins/timetrap timetrap
