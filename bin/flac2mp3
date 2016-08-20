@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+set -eou pipefail
+
+overwrite=
+
+while getopts ":ys" opt; do
+	case $opt in
+		y)
+			overwrite="true"
+			;;
+		\?)
+			echo "Invalid option: -${OPTARG}" 1>&2
+			exit 1
+			;;
+	esac
+done
+
+shift $((OPTIND-1))
+
+flac="${1:-}"
+mp3="${2:-}"
+
+if [ -z "${flac}" ] || [ -z "${mp3}" ]; then
+	echo "USAGE: ${0} [OPTS] FLAC MP3"
+	exit 1
+fi
+
+if [ ! -f "${flac}" ]; then
+	echo "No such file ${flac}" 1>&2
+	exit 1
+fi
+
+if [ -f "${mp3}" ] && [ -n "${overwrite}" ]; then
+	exec ffmpeg -y -i "${flac}" -ab 320k -map_metadata 0 -id3v2_version 3 "${mp3}"
+elif [ ! -f "${mp3}" ]; then
+	exec ffmpeg -i "${flac}" -ab 320k -map_metadata 0 -id3v2_version 3 "${mp3}"
+else
+	exit 0
+fi

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -eou pipefail
+
+release="${1:-}"
+output="${2:-}"
+
+if [ -z "${release}" ] || [ -z "${output}" ]; then
+	echo "USAGE: ${0} INPUT_DIRECTORY OUTPUT_DIRECTORY"
+	exit 1
+fi
+
+release_name="$(basename "${release}")"
+output_path="${output}/${release_name/-LOSSLESS/}"
+
+mkdir -p "${output_path}"
+
+find "${release}" -type f -name '*.flac' | parallel \
+	--quote \
+	flac2mp3 {} "${output_path}/{/.}.mp3"
