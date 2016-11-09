@@ -118,7 +118,7 @@ main() {
 			attach_project "$(fork_repo "$1")"
 			;;
 		*)
-			attach_project "$(clone_repo "$(slug_to_repo "$subcommand")")"
+			attach_project "$(clone_repo "$(slug_to_repo "${subcommand}")")"
 			;;
 	esac
 }
