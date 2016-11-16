@@ -51,6 +51,13 @@ clone_repo() {
 
 	if [ ! -d "${path}" ]; then
 		git clone "${repo}" "${path}"
+
+		# git clone does exits 0 even if clone fails; test here to make sure
+		# things worked.
+		if [ ! -d "${path}/.git" ]; then
+			echo "Cloning ${repo} failed" 1>&2
+			return 1
+		fi
 	fi
 
 	pushd "${path}" > /dev/null
