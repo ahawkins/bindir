@@ -5,12 +5,24 @@ set -euo pipefail
 declare -r S_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/s"
 declare -r S_ALIAS_DIR="${S_CONFIG_DIR}/aliases"
 
-repo_slug() {
-	if echo "$1" | grep -qF 'http://'; then
-		echo "Do not use HTTP clones" 1>&2
+declare -r ssh_regex='^[[:alpha:]]+@'
+declare -r custom_regex='^[[:alpha:]]+:\/{0,2}'
+
+protocol_given() {
+	if echo "${1}" | grep -Eq "${ssh_regex}"; then
+		return 0
+	elif echo "${1}" | grep -Eq "${custom_regex}"; then
+		return 0
+	else
 		return 1
-	elif echo "$1" | grep -qF 'git@'; then
+	fi
+}
+
+repo_slug() {
+	if echo "${1}" | grep -Eq "${ssh_regex}"; then
 		echo "$1" | cut -d ':' -f 2 | sed s/\.git//
+	elif echo "${1}" | grep -Eq "${custom_regex}"; then
+		echo "$1" | sed -E "s/${custom_regex}//" | sed 's/\.git//'
 	else
 		echo "Do not know how to handle ${1}" 1>&2
 		return 1
@@ -18,7 +30,7 @@ repo_slug() {
 }
 
 slug_to_repo() {
-	if ! echo "${1}" | grep -qF 'git@'; then
+	if ! protocol_given "$1"; then
 		local username repo_name
 
 		username="$(echo "${1}" | cut -d '/' -f 1)"
@@ -29,11 +41,8 @@ slug_to_repo() {
 		else
 			echo "git@github.com:${1}"
 		fi
-	elif echo "$1" | grep -qF 'git@'; then
-		echo "$1"
 	else
-		echo "Cannot generate git URL from ${1}" 1>&2
-		return 1
+		echo "$1"
 	fi
 }
 
@@ -121,7 +130,6 @@ main() {
 
 	case "${subcommand}" in
 		fork)
-
 			attach_project "$(fork_repo "$1")"
 			;;
 		*)
