@@ -34,7 +34,7 @@ EOF
 		scp "${script_file}" seedbox:~/ssync-lookup
 		ssh -n seedbox 'chmod +x ~/ssync-lookup'
 		ssh -n seedbox '~/ssync-lookup' | tee "${file_list}"
-		rsync -avzh --append --progress --files-from="${file_list}" "seedbox:~/torrents/downloads" "${dest}"
+		rsync -avzh --append --progress --files-from="${file_list}" "$@" "seedbox:~/torrents/downloads" "${dest}"
 	fi
 
 	ssh -n seedbox 'touch ~/.local/ssync/timestamp'
