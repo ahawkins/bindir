@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Directory to keep journal entries
+declare -r JOURNAL_DIR="${JOURNAL_DIR:-${XDG_CONFIG_DIR:-${HOME}/.config/jrnl}}"
+declare -r date="$(date '+%Y-%m-%d')"
+declare -r timestamp="$(date)"
+
+usage() {
+	cat <<EOF
+USAGE: "${0}" SUBCOMMAND
+
+SUBCOMMANDS
+
+edit  - Open the day's journal without adding a new entry
+entry - Add a new entry into today's journal file
+ls    - Print entry timestamps
+
+ENVIRONMENT VARIABLES
+
+JOURNAL_DIR
+	Directory to keep journal files. Defaults to \$XDG_CONFIG_DIR or
+	~/.config/jrnl if neither are set.
+
+EDITOR
+	Command to edit journal files
+EOF
+}
+
+
+
+main() {
+	mkdir -p "${JOURNAL_DIR}"
+	local -r target="${JOURNAL_DIR}/${date}.md"
+
+	case "${1:-}" in
+		edit)
+
+			if [ -f "${target}" ]; then
+				"${EDITOR}" "${target}"
+			else
+				echo "No journal for ${date}" 1>&2
+				return 1
+			fi
+
+			;;
+		entry)
+			if [ ! -f "${target}" ]; then
+				echo "# ${date}" > "${target}"
+				echo >> "${target}"
+			fi
+
+			echo "## ${timestamp}" >> "${target}"
+			echo >> "${target}"
+			echo >> "${target}"
+
+			"${EDITOR}" "${target}"
+
+			;;
+		*)
+			usage 1>&2
+			return 1
+			;;
+	esac
+}
+
+main "$@"
