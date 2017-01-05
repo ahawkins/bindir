@@ -1,3 +1,0 @@
-source 'https://rubygems.org'
-
-gem 'timetrap', '~> 1.8'
