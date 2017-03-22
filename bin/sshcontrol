@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-declare -r GPGHOME="$(gpgconf --list-dirs homedir)"
+declare -r GPGHOME="$(gpgconf --list-dirs | grep -F 'homedir:' | cut -d ':' -f 2)"
 declare -r SSHCONTROL_FILE="${GPGHOME}/sshcontrol"
 
 usage() {
