@@ -3,10 +3,10 @@ BIN_DIR := /usr/local/bin
 
 .PHONY: install
 install:
-	stow -t $(DEST) fish-stow
-	stow -t $(DEST) tmux-stow
-	stow -t $(DEST) git-stow
-	stow -t $(DEST) vim-stow
+	stow -t $(DEST) fish
+	stow -t $(DEST) tmux
+	stow -t $(DEST) git
+	stow -t $(DEST) vim
 	stow -t $(DEST) gnupg
 
 .PHONY: install-bin
