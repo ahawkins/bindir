@@ -1,0 +1,26 @@
+# Locale
+LANG   DEFAULT=en_US.UTF-8
+LC_ALL DEFAULT=${LANG}
+
+# Paths
+HOME          DEFAULT=/home/@{PAM_USER} OVERRIDE=${HOME}
+
+PATH DEFAULT=${HOME}/.local/bin\
+:/usr/local/sbin\
+:/usr/local/bin\
+:/usr/bin\
+:/bin\
+:/usr/bin/core_perl
+
+# Tools
+VISUAL    DEFAULT=vim
+EDITOR    DEFAULT=vim
+TERMINAL  DEFAULT=urxvt
+
+# XDG
+XDG_DESKTOP_DIR   DEFAULT=${HOME}
+XDG_DOCUMENTS_DIR DEFAULT=${HOME}/documents
+XDG_DOWNLOAD_DIR  DEFAULT=${HOME}/downloads
+XDG_MUSIC_DIR     DEFAULT=${HOME}/music
+XDG_PICTURES_DIR  DEFAULT=${HOME}/pictures
+XDG_VIDEOS_DIR    DEFAULT=${HOME}/videos
