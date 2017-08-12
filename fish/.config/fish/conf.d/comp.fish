@@ -1,0 +1,4 @@
+# Source host specific configuration
+if test -f ~/.config/comp/env.fish
+  source ~/.config/comp/env.fish
+end
