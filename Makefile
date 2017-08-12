@@ -9,7 +9,4 @@ install:
 	stow -t $(DEST) git
 	stow -t $(DEST) vim
 	stow -t $(DEST) gnupg
-
-.PHONY: install-bin
-install-bin:
-	stow -t /usr/local/bin bin
+	stow -t $(DEST) xorg
