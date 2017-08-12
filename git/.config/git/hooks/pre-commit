@@ -7,6 +7,10 @@ lint_editorconfig() {
 		return 0
 	fi
 
+	if ! which editorconfig &> /dev/null; then
+		return 0
+	fi
+
 	declare uncovered_files=0
 	declare ignore_file="$(mktemp)"
 
