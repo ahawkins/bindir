@@ -1,5 +1,4 @@
 DEST    ?= $$HOME
-BIN_DIR := /usr/local/bin
 
 .PHONY: install
 install:
